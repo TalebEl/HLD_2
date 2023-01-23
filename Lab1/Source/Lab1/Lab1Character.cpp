@@ -94,7 +94,7 @@ void ALab1Character::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &ALab1Character::sprintOn);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ALab1Character::sprintOff);
 
-		EnhancedInputComponent->BindAction(ProjectileFire, ETriggerEvent::Triggered, this, &ALab1Character::projectileFire);
+		EnhancedInputComponent->BindAction(ProjectileFire, ETriggerEvent::Completed, this, &ALab1Character::projectileFire);
 		//EnhancedInputComponent->BindAction(ProjectileFire, ETriggerEvent::Completed, this, &ALab1Character::projectileFire);
 	}
 
