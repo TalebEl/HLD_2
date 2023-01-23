@@ -1,0 +1,13 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{07857094-4432-501F-CCE1-EC81D55330F5}",
+	"Category": "",
+	"Description": " ",
+	"Modules": [
+		{
+			"Name": "Mega",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}

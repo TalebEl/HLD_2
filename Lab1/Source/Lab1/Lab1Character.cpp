@@ -74,6 +74,11 @@ void ALab1Character::BeginPlay()
 
 void ALab1Character::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	//PlayerInputComponent->BindAction("FireWeapon", IE_Pressed, this, &ALab1Character::projectileFire);
+	//PlayerInputComponent->BindAction("FireWeapon", IE_Released, this, &ALab1Character::projectileFire);
+
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
 		
@@ -90,10 +95,10 @@ void ALab1Character::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ALab1Character::sprintOff);
 
 		EnhancedInputComponent->BindAction(ProjectileFire, ETriggerEvent::Triggered, this, &ALab1Character::projectileFire);
-
-		
-
+		//EnhancedInputComponent->BindAction(ProjectileFire, ETriggerEvent::Completed, this, &ALab1Character::projectileFire);
 	}
+
+
 
 }
 
@@ -147,6 +152,7 @@ void ALab1Character::sprintOff()
 	GetCharacterMovement()->MaxWalkSpeed = 200;
 }
 
+
 void ALab1Character::projectileFire()
 {
 	FVector spawnLocation = GetActorLocation() + (GetControlRotation().Vector() * 100.0f) + (GetActorUpVector() * 50.0f);//Based on characters location and the direction it is facing
@@ -156,6 +162,11 @@ void ALab1Character::projectileFire()
 	spawnParameters.Owner = this;
 
 	GetWorld()->SpawnActor(AProjectile, &spawnLocation, &spawnRotation);
+}
+
+void ALab1Character::projectileReleaseFire()
+{
+
 }
 
 

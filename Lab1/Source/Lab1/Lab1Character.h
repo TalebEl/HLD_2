@@ -51,6 +51,8 @@ class ALab1Character : public ACharacter
 
 
 
+
+
 	/*AThirdPersonProjectile* spawnedProjectile = Cast<AThirdPersonProjectile>(GetWorld()->SpawnActor(ProjectileClass, &spawnLocation, &spawnRotation));*/
 
 public:
@@ -69,12 +71,17 @@ protected:
 	void sprintOff();
 
 	void projectileFire();
+
+	void projectileReleaseFire();
+
 			
 
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
+
+
 	// To add mapping context
 	virtual void BeginPlay();
 
