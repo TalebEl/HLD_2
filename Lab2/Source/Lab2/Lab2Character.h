@@ -41,6 +41,13 @@ class ALab2Character : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
+	//Projectile //From Lab1
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		class UInputAction* ProjectileFire;
+
+	UPROPERTY(EditAnywhere, Category = "Projectile")
+		TSubclassOf<class ACustomProjectile> ACustomProjectile;
+
 public:
 	ALab2Character();
 	
@@ -61,6 +68,10 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 
+	//From Lab1
+	void projectileFire();
+	void projectileReleaseFire();
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -75,6 +86,11 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		URadialForceComponent* RadialForceComponent;
+
+	
+
+
+	
 
 };
 

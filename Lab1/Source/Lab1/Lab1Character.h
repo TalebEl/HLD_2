@@ -41,17 +41,14 @@ class ALab1Character : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		class UInputAction* SprintAction;
 
+
+	//Projectile 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		class UInputAction* ProjectileFire;
 
 
-	UPROPERTY(EditAnywhere, Category = "Projetile")
+	UPROPERTY(EditAnywhere, Category = "Projectile")
 		TSubclassOf<class AProjectile> AProjectile;
-
-
-
-
-
 
 	/*AThirdPersonProjectile* spawnedProjectile = Cast<AThirdPersonProjectile>(GetWorld()->SpawnActor(ProjectileClass, &spawnLocation, &spawnRotation));*/
 
@@ -79,8 +76,6 @@ protected:
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
-
 
 	// To add mapping context
 	virtual void BeginPlay();

@@ -4,29 +4,33 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Projectile.generated.h"
-
+#include "CustomProjectile.generated.h"
 
 UCLASS()
-class LAB1_API AProjectile : public AActor
+class LAB2_API ACustomProjectile : public AActor
 {
-    GENERATED_BODY()
-
-public:
-    // Sets default values for this actor's properties
-    AProjectile();
-
+	GENERATED_BODY()
+	
+public:	
+	// Sets default values for this actor's properties
+	ACustomProjectile();
 
     UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
         class USphereComponent* SphereComponent;
 
+    UPROPERTY(VisibleAnywhere)
+        UStaticMeshComponent* StaticMesh;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AAA", meta = (AllowPrivateAccess = "true"))
         class UProjectileMovementComponent* ProjectileMovementComponent;
 
-    
+
 
 
 protected:
+    //delete later
+    //virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+    
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
@@ -50,23 +54,24 @@ protected:
 
     UPROPERTY(EditAnywhere, Category = "Effects")
         class UParticleSystem* ExplosionEffect;
-    
+
     UPROPERTY(EditAnywhere, Category = "Effects")
         class USoundBase* ExplosionSound;
 
     UFUNCTION()
         void OnProjectileImpact(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 
-    
+
 
     UFUNCTION()
         void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
-    
+
 
 
 public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;
+
 
 };

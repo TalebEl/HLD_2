@@ -8,6 +8,7 @@
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
+#include "CustomProjectile.h"
 #include "EnhancedInputSubsystems.h"
 
 
@@ -72,6 +73,19 @@ void ALab2Character::BeginPlay()
 	}
 }
 
+
+
+void ALab2Character::projectileFire()
+{
+	FVector spawnLocation = GetActorLocation() + (GetControlRotation().Vector() * 100.0f) + (GetActorUpVector() * 50.0f);//Based on characters location and the direction it is facing
+	FRotator spawnRotation = GetControlRotation();
+	FActorSpawnParameters spawnParameters;
+	spawnParameters.Instigator = GetInstigator();
+	spawnParameters.Owner = this;
+
+	GetWorld()->SpawnActor(ACustomProjectile, &spawnLocation, &spawnRotation);
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -90,8 +104,9 @@ void ALab2Character::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ALab2Character::Look);
 
+		EnhancedInputComponent->BindAction(ProjectileFire, ETriggerEvent::Completed, this, &ALab2Character::projectileFire);
+		//EnhancedInputComponent->BindAction(ProjectileFire, ETriggerEvent::Completed, this, &ALab1Character::projectileFire);
 	}
-
 }
 
 void ALab2Character::Move(const FInputActionValue& Value)

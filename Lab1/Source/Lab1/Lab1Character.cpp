@@ -97,9 +97,6 @@ void ALab1Character::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(ProjectileFire, ETriggerEvent::Completed, this, &ALab1Character::projectileFire);
 		//EnhancedInputComponent->BindAction(ProjectileFire, ETriggerEvent::Completed, this, &ALab1Character::projectileFire);
 	}
-
-
-
 }
 
 
