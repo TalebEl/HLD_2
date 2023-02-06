@@ -70,7 +70,6 @@ protected:
 
 	//From Lab1
 	void projectileFire();
-	void projectileReleaseFire();
 
 public:
 	/** Returns CameraBoom subobject **/

@@ -29,7 +29,6 @@ ACustomProjectile::ACustomProjectile()
 	StaticMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	StaticMesh->SetWorldLocation(GetActorLocation());
 	SetRootComponent(StaticMesh);
-	//StaticMesh->AttachToComponent(OtherActor->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 
 	
 
@@ -90,7 +89,7 @@ void ACustomProjectile::Tick(float DeltaTime)
 
 }
 
-void ACustomProjectile::explode() // temp
+void ACustomProjectile::explode() // temp currently not working
 {
 	//NOT WORKING
 	TArray<AActor*> OverlappingActors;

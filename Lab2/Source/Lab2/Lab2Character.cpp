@@ -51,8 +51,11 @@ ALab2Character::ALab2Character()
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 
+
 	TextComponent = CreateDefaultSubobject<UTextRenderComponent>(TEXT("TextComponent"));
 	TextComponent->SetupAttachment(RootComponent);
+
+
 
 	RadialForceComponent = CreateDefaultSubobject<URadialForceComponent>(TEXT("RadialForceComponent"));
 	RadialForceComponent->SetupAttachment(RootComponent);
@@ -77,13 +80,18 @@ void ALab2Character::BeginPlay()
 
 void ALab2Character::projectileFire()
 {
-	FVector spawnLocation = GetActorLocation() + (GetControlRotation().Vector() * 100.0f) + (GetActorUpVector() * 50.0f);//Based on characters location and the direction it is facing
-	FRotator spawnRotation = GetControlRotation();
-	FActorSpawnParameters spawnParameters;
-	spawnParameters.Instigator = GetInstigator();
-	spawnParameters.Owner = this;
+	//This handles the decrementing-- for the grenades ->  if it shoots -- From NumGrenades
+	if (NumGrenades > 0)
+	{
+		FVector spawnLocation = GetActorLocation() + (GetControlRotation().Vector() * 100.0f) + (GetActorUpVector() * 50.0f);//Based on characters location and the direction it is facing
+		FRotator spawnRotation = GetControlRotation();
+		FActorSpawnParameters spawnParameters;
+		spawnParameters.Instigator = GetInstigator();
+		spawnParameters.Owner = this;
+		GetWorld()->SpawnActor(ACustomProjectile, &spawnLocation, &spawnRotation);
 
-	GetWorld()->SpawnActor(ACustomProjectile, &spawnLocation, &spawnRotation);
+		NumGrenades--;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////

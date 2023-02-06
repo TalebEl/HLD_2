@@ -13,7 +13,7 @@ bool UCustomUserWidget::Initialize()
 
     if (Widget)
     {
-        Widget->SetText(FText::FromString("I HATE GAME DEV :) "));
+        Widget->SetText(FText::FromString("TEMP "));
     }
 
     return bResult;
@@ -35,6 +35,7 @@ void UCustomUserWidget::UpdateNumGrenades()
 
     if (Widget)
     {
+        //That handle the UI ---- Grenade:5(by decrementing --)
         Widget->SetText(FText::FromString("Grenades: " +FString::FromInt(Player->NumGrenades)));
     }
 }
