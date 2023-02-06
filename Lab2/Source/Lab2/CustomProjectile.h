@@ -18,6 +18,9 @@ public:
     UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
         class USphereComponent* SphereComponent;
 
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
+        float GrenadeCounter;
+
     UPROPERTY(VisibleAnywhere)
         UStaticMeshComponent* StaticMesh;
 
@@ -73,5 +76,5 @@ public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;
 
-
+    void explode();
 };

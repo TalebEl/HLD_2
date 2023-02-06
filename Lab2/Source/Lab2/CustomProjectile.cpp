@@ -4,7 +4,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
-
+#include "Lab2Character.h"
 #include "CustomProjectile.h"
 
 // Sets default values
@@ -19,6 +19,9 @@ ACustomProjectile::ACustomProjectile()
 	SphereComponent->SetupAttachment(StaticMesh);
 	//SphereComponent->SetGenerateOverlapEvents(true);
 	SphereComponent->OnComponentHit.AddDynamic(this, &ACustomProjectile::OnProjectileImpact);
+
+
+	GrenadeCounter = 3.0f; // Grenade Timer 
 	
 	//The Static Mesh
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
@@ -65,7 +68,7 @@ void ACustomProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 		{
 			UGameplayStatics::SpawnEmitterAtLocation(this, ProjectileFX, GetActorLocation());
 		}
-		Destroy();
+	    Destroy();
 	}
 }
 
@@ -74,8 +77,22 @@ void ACustomProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//IF SMT SMT 3 SEC DESTROY();
+	//NOT WORKING
+	//temp
+	// Unique handle that can be used to distinguish timers that have identical delegates
+	FTimerHandle TExplodeHandle;
+	GetWorldTimerManager().SetTimer(TExplodeHandle, this, &ACustomProjectile::explode, GrenadeCounter, false);
+
+	if (GrenadeCounter <= 0.0f)
+	{
+		Destroy();
+	}
 
 }
 
-
+void ACustomProjectile::explode() // temp
+{
+	//NOT WORKING
+	TArray<AActor*> OverlappingActors;
+	SphereComponent->GetOverlappingActors(OverlappingActors, TSubclassOf<ALab2Character>());
+}
