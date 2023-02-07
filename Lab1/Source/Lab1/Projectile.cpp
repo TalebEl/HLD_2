@@ -16,7 +16,6 @@ AProjectile::AProjectile()
     SphereComponent->SetCollisionProfileName("BlockAllDynamic");
     //SphereComponent->SetGenerateOverlapEvents(true);
     SphereComponent->OnComponentHit.AddDynamic(this, &AProjectile::OnProjectileImpact);
-
     SetRootComponent(SphereComponent);
 
 

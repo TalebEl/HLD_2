@@ -54,6 +54,8 @@ ALab2Character::ALab2Character()
 
 	TextComponent = CreateDefaultSubobject<UTextRenderComponent>(TEXT("TextComponent"));
 	TextComponent->SetupAttachment(RootComponent);
+	//For the Hud above the character head
+	TextComponent->SetText(FText::FromString(FString::FromInt(NumGrenades)));
 
 
 
@@ -91,6 +93,8 @@ void ALab2Character::projectileFire()
 		GetWorld()->SpawnActor(ACustomProjectile, &spawnLocation, &spawnRotation);
 
 		NumGrenades--;
+		//This updates the text above the head (Grenades:5)
+		TextComponent->SetText(FText::FromString(FString::FromInt(NumGrenades)));
 	}
 }
 
@@ -114,6 +118,8 @@ void ALab2Character::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 
 		EnhancedInputComponent->BindAction(ProjectileFire, ETriggerEvent::Completed, this, &ALab2Character::projectileFire);
 		//EnhancedInputComponent->BindAction(ProjectileFire, ETriggerEvent::Completed, this, &ALab1Character::projectileFire);
+
+
 	}
 }
 

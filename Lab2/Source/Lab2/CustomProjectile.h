@@ -2,9 +2,11 @@
 
 #pragma once
 
+#include "PhysicsEngine/RadialForceComponent.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "CustomProjectile.generated.h"
+
 
 UCLASS()
 class LAB2_API ACustomProjectile : public AActor
@@ -19,15 +21,18 @@ public:
         class USphereComponent* SphereComponent;
 
     UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
-        float GrenadeCounter;
+        float GrenadeFuse;
 
     UPROPERTY(VisibleAnywhere)
         UStaticMeshComponent* StaticMesh;
 
+    UPROPERTY(EditAnywhere)
+        URadialForceComponent* RadialImpulse;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AAA", meta = (AllowPrivateAccess = "true"))
         class UProjectileMovementComponent* ProjectileMovementComponent;
 
-
+    
 
 
 protected:
@@ -65,14 +70,12 @@ protected:
         void OnProjectileImpact(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 
 
-
     UFUNCTION()
         void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 
-
-
 public:
+
     // Called every frame
     virtual void Tick(float DeltaTime) override;
 

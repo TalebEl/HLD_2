@@ -4,8 +4,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "PhysicsEngine/RadialForceComponent.h"
+//#include "Components/PrimitiveComponent.h" // For the impulse
 #include "Lab2Character.h"
 #include "CustomProjectile.h"
+
 
 // Sets default values
 ACustomProjectile::ACustomProjectile()
@@ -15,27 +18,33 @@ ACustomProjectile::ACustomProjectile()
 
 	//Collsion   (SphereComponent)
 	SphereComponent = CreateDefaultSubobject<USphereComponent>("Sphere Collision");
-	//SphereComponent->SetCollisionProfileName("BlockAllDynamic");
+	SphereComponent->SetCollisionProfileName("BlockAllDynamic");
 	SphereComponent->SetupAttachment(StaticMesh);
-	//SphereComponent->SetGenerateOverlapEvents(true);
-	SphereComponent->OnComponentHit.AddDynamic(this, &ACustomProjectile::OnProjectileImpact);
+	SphereComponent->SetGenerateOverlapEvents(true);
+	SphereComponent->OnComponentHit.AddDynamic(this, &ACustomProjectile::OnHit);
 
 
-	GrenadeCounter = 3.0f; // Grenade Timer 
+	GrenadeFuse = 3.0f; // Grenade Timer 
 	
 	//The Static Mesh
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	StaticMesh->SetSimulatePhysics(false);
-	StaticMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	StaticMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	StaticMesh->OnComponentHit.AddDynamic(this, &ACustomProjectile::OnHit);
 	StaticMesh->SetWorldLocation(GetActorLocation());
 	SetRootComponent(StaticMesh);
-
-	
-
 
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("SoundEmitter"));
 	AudioComponent->bAutoActivate = false;
 	AudioComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+
+	//RadialImpulse From the Grenade
+	RadialImpulse = CreateDefaultSubobject<URadialForceComponent>(TEXT("RadialForceComponent"));
+	RadialImpulse->bImpulseVelChange = true;
+	RadialImpulse->ForceStrength = 1000.0f;
+	RadialImpulse->ImpulseStrength = 1000.0f;
+	RadialImpulse->Radius = 200.0f;
+	RadialImpulse->SetupAttachment(RootComponent);
 
 }
 
@@ -45,16 +54,23 @@ void ACustomProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
+	
+
+	/*TArray<FHitResult> Hits;
+	FVector MyLocation = GetActorLocation();*/
+
+	StaticMesh->AddRadialImpulse(GetActorLocation(), 500.0f, 2000.0f, ERadialImpulseFalloff::RIF_Constant, true);
+
+	//FCollisionShape* CollisionSphere = FCollisionShape::MakeSphere(500.0f);
+
+	//bool isHit = GetWorld()->SweepMultiByChannel(Hits, MyLocation, MyLocation, FQuat::Identity, ECC_WorldStatic, MakeSphere);
 }
 
 void ACustomProjectile::OnProjectileImpact(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
 	//int x = 2;
-
-
 	UGameplayStatics::SpawnEmitterAtLocation(this, ExplosionEffect, GetActorLocation(), FRotator::ZeroRotator, true, EPSCPoolMethod::AutoRelease);
 	UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
-
 	Destroy();
 }
 
@@ -62,12 +78,9 @@ void ACustomProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 {
 	if (OtherActor != this->GetOwner())
 	{
-		UGameplayStatics::PlaySoundAtLocation(this->GetWorld(), ImpactSound, GetActorLocation());
-		if (ProjectileFX)
-		{
-			UGameplayStatics::SpawnEmitterAtLocation(this, ProjectileFX, GetActorLocation());
-		}
-	    Destroy();
+		
+			FTimerHandle TExplodeHandle;
+			GetWorldTimerManager().SetTimer(TExplodeHandle, this, &ACustomProjectile::explode, GrenadeFuse, false);
 	}
 }
 
@@ -76,22 +89,24 @@ void ACustomProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//NOT WORKING
-	//temp
-	// Unique handle that can be used to distinguish timers that have identical delegates
-	FTimerHandle TExplodeHandle;
-	GetWorldTimerManager().SetTimer(TExplodeHandle, this, &ACustomProjectile::explode, GrenadeCounter, false);
-
-	if (GrenadeCounter <= 0.0f)
-	{
-		Destroy();
-	}
-
 }
 
 void ACustomProjectile::explode() // temp currently not working
 {
-	//NOT WORKING
-	TArray<AActor*> OverlappingActors;
-	SphereComponent->GetOverlappingActors(OverlappingActors, TSubclassOf<ALab2Character>());
+	RadialImpulse->FireImpulse();
+	
+	UGameplayStatics::PlaySoundAtLocation(this->GetWorld(), ImpactSound, GetActorLocation());
+	if (ProjectileFX)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(this, ProjectileFX, GetActorLocation());
+	}
+	//StaticMesh->AddRadialImpulse(GetActorLocation(), 500.0f, 2000.0f, ERadialImpulseFalloff::RIF_Constant, true);
+
+
+	Destroy();
+
+	
+
+
+
 }
