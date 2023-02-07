@@ -11,11 +11,11 @@
 UCLASS()
 class LAB2_API ACustomProjectile : public AActor
 {
-	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
-	ACustomProjectile();
+    GENERATED_BODY()
+
+public:
+    // Sets default values for this actor's properties
+    ACustomProjectile();
 
     UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
         class USphereComponent* SphereComponent;
@@ -32,13 +32,10 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AAA", meta = (AllowPrivateAccess = "true"))
         class UProjectileMovementComponent* ProjectileMovementComponent;
 
-    
-
-
 protected:
     //delete later
     //virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
-    
+
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
