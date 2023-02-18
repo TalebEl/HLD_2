@@ -69,7 +69,6 @@ void ACustomProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 {
     if (OtherActor != this->GetOwner())
     {
-
         FTimerHandle TExplodeHandle;
         GetWorldTimerManager().SetTimer(TExplodeHandle, this, &ACustomProjectile::explode, GrenadeFuse, false);
     }
@@ -82,7 +81,7 @@ void ACustomProjectile::Tick(float DeltaTime)
 
 }
 
-void ACustomProjectile::explode() // temp currently not working
+void ACustomProjectile::explode()
 {
     RadialImpulse->FireImpulse();
 
