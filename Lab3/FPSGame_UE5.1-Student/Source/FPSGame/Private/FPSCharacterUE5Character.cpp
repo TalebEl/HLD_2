@@ -8,7 +8,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "FPSBombActor.h"
-//#include "Kismet/KismetMathLibrary.h"
+
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -18,10 +18,10 @@ AFPSCharacterUE5Character::AFPSCharacterUE5Character()
 {
 	// Character doesnt have a rifle at start
 	bHasRifle = false;
-	
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
-		
+
 	// Create a CameraComponent	
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
@@ -35,13 +35,16 @@ AFPSCharacterUE5Character::AFPSCharacterUE5Character()
 	Mesh1P->bCastDynamicShadow = false;
 	Mesh1P->CastShadow = false;
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
-	
-		// Create a gun mesh component
+
+	// Create a gun mesh component
 	BombGripMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_BombGrip"));
 	BombGripMeshComponent->CastShadow = false;
 	BombGripMeshComponent->SetupAttachment(Mesh1P, "BombSocket");
 
 	IsAbleToFire = true;
+
+	RadialForceComponent = CreateDefaultSubobject<URadialForceComponent>(TEXT("RadialForceComponent"));
+	RadialForceComponent->SetupAttachment(RootComponent);
 }
 
 void AFPSCharacterUE5Character::BeginPlay()
@@ -78,8 +81,12 @@ void AFPSCharacterUE5Character::SetupPlayerInputComponent(class UInputComponent*
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AFPSCharacterUE5Character::Look);
 
 		EnhancedInputComponent->BindAction(BombAction, ETriggerEvent::Triggered, this, &AFPSCharacterUE5Character::pickupBomb);
-		EnhancedInputComponent->BindAction(BombAction, ETriggerEvent::Completed, this, &AFPSCharacterUE5Character::trowBomb);
 
+		//EnhancedInputComponent->BindAction(BombReleaseAction, ETriggerEvent::Completed, this, &AFPSCharacterUE5Character::BombRelease);
+		EnhancedInputComponent->BindAction(BombAction, ETriggerEvent::Completed, this, &AFPSCharacterUE5Character::BombRelease);
+
+
+		//EnhancedInputComponent->BindAction(BombReleaseAction, ETriggerEvent::Completed, this, &AFPSCharacterUE5Character::BombRelease);
 	}
 }
 
@@ -94,22 +101,33 @@ void AFPSCharacterUE5Character::pickupBomb()
 		AFPSBombActor* bomb = Cast<AFPSBombActor>(PickedActor);
 		if (bomb)
 		{
+			Bomb = bomb;
 			bomb->Hold(BombGripMeshComponent);
 		}
+		
 	}
 
 
 }
 
-void AFPSCharacterUE5Character::trowBomb()
+void AFPSCharacterUE5Character::BombRelease()
 {
 	if (Bomb)
 	{
-		//Bomb->BombOnRelease(UKismetMathLibrary::GetForwardVector(GetController));
-		//----stop velocity---
+		//Bomb = GetWorld()->SpawnActor<AFPSBombActor>(BombActor);
+		FVector Camloc;
+		FRotator CamRot;
 
+		Controller->GetPlayerViewPoint(Camloc, CamRot);
+
+		Bomb->OnRelease(CamRot.Vector());
+
+		
+		//----stop velocity---
+		// 
 		//---add impulse---
 	}
+
 }
 
 AActor* AFPSCharacterUE5Character::RayCastActor()
@@ -146,7 +164,7 @@ void AFPSCharacterUE5Character::setupRay(FVector& StartTrace, FVector& Direction
 	//Distance of the pickup
 	EndTrace = StartTrace + Direction * 300;
 
-	
+
 
 
 }

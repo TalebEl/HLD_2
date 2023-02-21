@@ -22,9 +22,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "BombActor")
 		class UBoxComponent* BombBox;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-		class UInputAction* MoveAction;
-
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 		float BombFuse;
 
@@ -34,9 +31,18 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Effects")
 		UParticleSystem* ProjectileFX;
 
+	UPROPERTY(EditAnywhere, Category = "Effects")
+		class UParticleSystem* ExplosionEffect;
+
 	//Maybe do not need???
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom", meta = (AllowPrivateAccess = "true"))
 		class USoundBase* ImpactSound;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Custom", meta = (AllowPrivateAccess = "true"))
+		class UAudioComponent* AudioComponent;
+
+	UFUNCTION()
+		void OnProjectileImpact(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 
 protected:
 	// Called when the game starts or when spawned
@@ -48,13 +54,14 @@ public:
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	void Hold(USkeletalMeshComponent* HoldingComponent);
-	virtual void AddForce();
+
+	bool IsThrown;
 
 	void Bombexplode();
-	void BombOnRelease();//FVector ForwardVector
-	
+	void OnRelease(FVector ForwardVector);//FVector ForwardVector
+	void explode();
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	FTimerHandle TExplodeHandle;
 };

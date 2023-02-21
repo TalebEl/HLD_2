@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "PhysicsEngine/RadialForceComponent.h"
 #include "FPSCharacterUE5Character.generated.h"
+
 
 class UInputComponent;
 class USkeletalMeshComponent;
@@ -45,7 +47,9 @@ class AFPSCharacterUE5Character : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		class UInputAction* BombAction;
 
-	
+	//temp test
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		class UInputAction* BombReleaseAction;
 
 	
 public:
@@ -56,8 +60,8 @@ protected:
 
 public:
 		
-	UPROPERTY(BlueprintReadWrite, Category = "Bomb")
-		class AFPSBombActor* Bomb;
+
+
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
@@ -74,6 +78,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	bool GetHasRifle();
 	
+	
 
 protected:
 	/** Called for movement input */
@@ -86,11 +91,20 @@ protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	// End of APawn interface
+
+	//Bomb reference
+	UPROPERTY(BlueprintReadWrite, Category = "Bomb")
+		class AFPSBombActor* Bomb;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Bomb")
+		TSubclassOf<class AFPSBombActor> BombActor;
 	
 	bool IsAbleToFire;
-
+	//For bomb
 	void pickupBomb();
-	void trowBomb();
+	
+	UFUNCTION(BlueprintCallable, Category = "Grenade")
+		void BombRelease();
 
 	AActor* RayCastActor();
 	void setupRay(FVector& StartTrace, FVector& Direction, FVector& EndTrace);
@@ -100,6 +114,9 @@ public:
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		URadialForceComponent* RadialForceComponent;//Character impulse
 
 	bool GetIsAbleToFire() { return IsAbleToFire; }
 };
